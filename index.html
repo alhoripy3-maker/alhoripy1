@@ -3291,7 +3291,7 @@ async function loadWhatsAppButton() {
             whatsappNumber = data[0].whatsapp;
         }
 
-        const message = encodeURIComponent("السلام عليكم\nالحريبي للتجارة - يرحب بكم\nتفضل كيف نقدر نخدمك ؟");
+        const message = encodeURIComponent("السلام عليكم");
         const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
         const btn = document.getElementById('whatsapp-button');
@@ -3350,4 +3350,5 @@ document.addEventListener('DOMContentLoaded', loadWhatsAppButton);
 
 </body>
 </html>
+
 
