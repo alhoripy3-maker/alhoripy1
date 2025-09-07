@@ -51,7 +51,6 @@ body {
   line-height: 1.6;
   min-height: 100vh;
 }
-
 header {
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
   color: white;
@@ -60,7 +59,7 @@ header {
   align-items: center;
   justify-content: space-between;
   box-shadow: var(--shadow-lg);
-  position: sticky;
+  /* position: sticky; */  /* <--- تم حذف هذا السطر أو تحويله لتعليق */
   top: 0;
   z-index: 100;
   height: var(--header-height);
@@ -418,24 +417,83 @@ header h1 {
   box-shadow: var(--shadow-md);
 }
 
-.cart-panel {
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-light);
-  position: sticky;
-  top: calc(var(--header-height) + 1.5rem);
+/* Cart Modal Styles */
+#cartModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.cart-header {
+#cartModal.is-visible {
+  display: flex;
+  opacity: 1;
+}
+
+.cart-modal-content {
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+  width: 600px;
+  padding: 1.5rem;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cart-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cart-modal-header h3 {
   color: var(--primary-color);
   font-weight: 600;
   font-size: 1.125rem;
+}
+
+.cart-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-close-btn:hover {
+  color: var(--danger-color);
+  background: var(--bg-tertiary);
 }
 
 .cart-items {
@@ -472,6 +530,7 @@ header h1 {
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-light);
+  margin-top: 1rem;
 }
 
 .form-group {
@@ -509,6 +568,48 @@ header h1 {
   margin-top: 1rem;
 }
 
+/* Floating Cart Button */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.floating-cart-btn:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  transform: scale(1.1);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -538,17 +639,6 @@ header h1 {
   max-height: 90vh;
   overflow: hidden;
   animation: modalSlideIn 0.3s ease-out;
-}
-
-@keyframes modalSlideIn {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 /* Product Detail Modal Styles */
@@ -1070,7 +1160,7 @@ tr:hover {
   
   #itemsGrid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
   
   .categories-grid {
@@ -1089,6 +1179,19 @@ tr:hover {
   #orderDetailsModal .order-details-grid {
     grid-template-columns: 1fr;
   }
+
+  .cart-modal-content {
+    width: 95%;
+    max-width: none;
+    margin: 0.5rem;
+  }
+
+  .floating-cart-btn {
+    bottom: 100px;
+    right: 15px;
+    width: 55px;
+    height: 55px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1097,7 +1200,7 @@ tr:hover {
   }
   
   #itemsGrid {
-    grid-template-columns: 1fr;
+   grid-template-columns: 1fr 1fr;
   }
   
   .card {
@@ -1178,7 +1281,7 @@ tr:hover {
 <div class="logo-container">
 <img id="headerLogo" class="logo" src="https://i.imgur.com/yOUC9V7.jpeg/50" alt="شعار الحريبي" />
 </div>
-<h1>الحريبي للتجارة | قطع غيار الدراجات النارية  والمواطير ( ثقة و ضمان ) - ذمار - جولة المحافظة تلفون 775961051  </h1>
+<h1>الحريبي للتجارة | قطع غيار الدراجات النارية  والمواطير ( ثقة و ضمان ) - ذمار - جولة المحافظة تلفون 775961051 </h1>
 </div>
 <div class="header-controls">
 <button id="btnAdminOpen" class="btn btn-ghost" title="لوحة التحكم">
@@ -1188,6 +1291,13 @@ tr:hover {
 </header>
 <div id="appError" class="notification error" style="display: none;"></div>
 <div id="successNotification" class="notification"></div>
+
+<!-- Floating Cart Button -->
+<button id="floatingCartBtn" class="floating-cart-btn" onclick="openCartModal()">
+  <i class="fas fa-shopping-cart"></i>
+  <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
+</button>
+
 <div class="container">
 <div class="categories-section">
 <div class="categories-header">
@@ -1213,55 +1323,61 @@ tr:hover {
 <div id="itemsGrid">
 </div>
 </div>
-<div class="cart-panel" id="cartPanel">
-<div class="cart-header">
-<h4><i class="fas fa-shopping-cart"></i> سلة الطلب</h4>
-<button id="btnClearCart" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.375rem 0.625rem;">
-<i class="fas fa-trash-alt"></i>
-</button>
 </div>
-<div class="cart-items" id="cartList">
-<div class="empty-state">
-<i class="fas fa-shopping-cart empty-state-icon"></i>
-<p>السلة فارغة</p>
-</div>
-</div>
-<div class="cart-total" id="cartTotal">الإجمالي: 0 قطعة</div>
-<div class="form-section">
-<div class="cart-header">
-<h4><i class="fas fa-envelope"></i> نموذج طلب الشراء</h4>
-</div>
-<div class="form-group">
-<label>اسم العميل</label>
-<input id="clientName" class="form-control" placeholder="أدخل اسم العميل" />
-</div>
-<div class="form-group">
-<label>رقم الجوال</label>
-<input id="clientPhone" class="form-control" placeholder="أدخل رقم الجوال" />
-</div>
-<div class="form-group">
-<label>اسم المحل (إلزامي)</label>
-<input id="shopName" class="form-control" placeholder="أدخل اسم المحل" required />
-</div>
-<div class="form-group">
-<label>العنوان</label>
-<input id="address" class="form-control" placeholder="أدخل العنوان" />
-</div>
-<div class="form-actions">
-<button id="btnSaveOrder" class="btn btn-primary">
-<i class="fas fa-save"></i> حفظ الطلب
-</button>
-<button id="btnExportEmail" class="btn btn-secondary">
-<i class="fas fa-file-excel"></i> تصدير وإرسال
-</button>
-<button id="btnPrint" class="btn btn-ghost">
-<i class="fas fa-print"></i> طباعة
-</button>
-<button id="btnWhatsApp" class="btn btn-secondary">
-<i class="fab fa-whatsapp"></i> واتساب
-</button>
-</div>
-</div>
+
+<!-- Cart Modal -->
+<div id="cartModal" class="modal">
+  <div class="cart-modal-content">
+    <div class="cart-modal-header">
+      <h3><i class="fas fa-shopping-cart"></i> سلة الطلب</h3>
+      <button class="cart-close-btn" onclick="closeCartModal()">&times;</button>
+    </div>
+    
+    <div class="cart-items" id="cartList">
+      <div class="empty-state">
+        <i class="fas fa-shopping-cart empty-state-icon"></i>
+        <p>السلة فارغة</p>
+      </div>
+    </div>
+    
+    <div class="cart-total" id="cartTotal">الإجمالي: 0 قطعة</div>
+    
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+      <button id="btnClearCart" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.375rem 0.625rem;">
+        <i class="fas fa-trash-alt"></i> إفراغ السلة
+      </button>
+    </div>
+    
+    <div class="form-section">
+      <div class="cart-modal-header" style="border-bottom: none; padding-bottom: 0; margin-bottom: 1rem;">
+        <h4><i class="fas fa-envelope"></i> نموذج طلب الشراء</h4>
+      </div>
+      <div class="form-group">
+        <label>اسم العميل</label>
+        <input id="clientName" class="form-control" placeholder="أدخل اسم العميل" />
+      </div>
+      <div class="form-group">
+        <label>رقم الجوال</label>
+        <input id="clientPhone" class="form-control" placeholder="أدخل رقم الجوال" />
+      </div>
+      <div class="form-group">
+        <label>اسم المحل (إلزامي)</label>
+        <input id="shopName" class="form-control" placeholder="أدخل اسم المحل" required />
+      </div>
+      <div class="form-group">
+        <label>العنوان</label>
+        <input id="address" class="form-control" placeholder="أدخل العنوان" />
+      </div>
+      <div class="form-actions">
+        <button id="btnPrint" class="btn btn-ghost">
+          <i class="fas fa-print"></i> طباعة
+        </button>
+        <button id="btnWhatsApp" class="btn btn-secondary">
+          <i class="fab fa-whatsapp"></i> واتساب
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Product Detail Modal -->
@@ -1287,6 +1403,7 @@ tr:hover {
     </div>
   </div>
 </div>
+
 <div id="adminModal" class="modal" aria-hidden="true">
 <div id="loginSection" class="login-section">
 <div class="login-header">
@@ -1358,16 +1475,16 @@ tr:hover {
 </div>
 </div>
 <footer style="text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.75rem;">
-© الحريبي للتجارة | قطع غيار الدراجات النارية الاصلية - الحريبي (جودة تستحق الثقة) 2025
+© الحريبي للتجارة | -  (جميع الحقوق محفوظة) 2025
 </footer>
 <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    // Supabase Configuration
+// Supabase Configuration
     const SUPABASE_URL = 'https://muwylrqdcrzggqbxhmoq.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im11d3lscnFkY3J6Z2dxYnhobW9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NjUzOTcsImV4cCI6MjA3MTI0MTM5N30.vO-mMw4TULYO62dNgw_lRe8NoMd9SW6SDOwjr5r83Zo';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
+    window.supabase = supabase; // <--- هذا هو السطر الذي يجب إضافته
+
     const $ = id => document.getElementById(id);
     let catalog = { categories: [], items: [] };
     let cart = [];
@@ -1392,6 +1509,31 @@ tr:hover {
             {id: 104, name: 'إطار خلفي', description: 'إطار خلفي مقاس 17', img: 'https://picsum.photos/250', price: 300, stock: 15, cat: 4}
         ]
     };
+
+    // Cart Modal Functions
+    function openCartModal() {
+        const modal = $('cartModal');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('is-visible'), 10);
+    }
+
+    function closeCartModal() {
+        const modal = $('cartModal');
+        modal.classList.remove('is-visible');
+        setTimeout(() => modal.style.display = 'none', 300);
+    }
+
+    function updateCartBadge() {
+        const badge = $('cartBadge');
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        
+        if (totalItems > 0) {
+            badge.style.display = 'flex';
+            badge.textContent = totalItems;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
 
     function showError(msg) {
         const el = $('appError');
@@ -1600,6 +1742,7 @@ tr:hover {
         }
         
         renderCart();
+        updateCartBadge();
         showNotification('تمت إضافة الصنف إلى السلة!');
     }
     
@@ -1652,6 +1795,7 @@ tr:hover {
                     if (newQuantity > 0) {
                         cart[index].quantity = newQuantity;
                         renderCart();
+                        updateCartBadge();
                     }
                 });
             });
@@ -1666,6 +1810,7 @@ tr:hover {
                         cart.splice(index, 1);
                     }
                     renderCart();
+                    updateCartBadge();
                 });
             });
             
@@ -1674,14 +1819,17 @@ tr:hover {
                     const index = this.dataset.index;
                     cart[index].quantity++;
                     renderCart();
+                    updateCartBadge();
                 });
             });
         }
+        updateCartBadge();
     }
 
     function clearCart() {
         cart = [];
         renderCart();
+        updateCartBadge();
         showNotification('تم إفراغ السلة');
     }
 
@@ -1762,7 +1910,7 @@ tr:hover {
             </head>
             <body>
                 <div class="header">
-                    <h1>الحريби للتجارة</h1>
+                    <h1>الحريبي للتجارة</h1>
                     <h2>قطع غيار الدراجات النارية الأصلية</h2>
                     <p>فاتورة طلب - ${new Date().toLocaleDateString('ar-SA')}</p>
                 </div>
@@ -1824,7 +1972,7 @@ tr:hover {
 
         message += `\n*إجمالي الكمية: ${cart.reduce((sum, item) => sum + item.quantity, 0)} قطعة*\n\n`;
         message += `تاريخ الطلب: ${new Date().toLocaleDateString('ar-SA')}\n`;
-        message += `---\n*الحريبي للتجارة* 🏪`;
+        message += `---\n*الحريبي للتجارة* 🪛`;
 
         const whatsappUrl = `https://wa.me/${adminUserDetails.whatsapp}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
@@ -1837,58 +1985,8 @@ tr:hover {
         // إفراغ السلة بعد إرسال واتساب
         cart = [];
         renderCart();
-    }
-
-    function generateExcelData() {
-        const clientName = $('clientName').value || 'غير محدد';
-        const clientPhone = $('clientPhone').value || 'غير محدد';
-        const shopName = $('shopName').value || 'غير محدد';
-        const address = $('address').value || 'غير محدد';
-        
-        let csvContent = "data:text/csv;charset=utf-8-BOM,";
-        csvContent += "\uFEFF";
-        csvContent += "الحريبي للتجارة - طلب قطع غيار\n";
-        csvContent += `التاريخ:,${new Date().toLocaleDateString('ar-SA')}\n`;
-        csvContent += `اسم العميل:,${clientName}\n`;
-        csvContent += `رقم الجوال:,${clientPhone}\n`;
-        csvContent += `اسم المحل:,${shopName}\n`;
-        csvContent += `العنوان:,${address}\n`;
-        csvContent += "\n";
-        csvContent += "اسم الصنف,الكمية,الوصف\n";
-        
-        cart.forEach(item => {
-            csvContent += `"${item.name}",${item.quantity},"${item.description || 'لا يوجد وصف'}"\n`;
-        });
-        
-        csvContent += "\n";
-        csvContent += `إجمالي الكمية:,${cart.reduce((sum, item) => sum + item.quantity, 0)}\n`;
-        
-        return csvContent;
-    }
-
-    async function exportAndEmail() {
-        const saved = await saveOrder();
-        if (!saved) {
-            return;
-        }
-        
-        const csvData = generateExcelData();
-        const encodedUri = encodeURI(csvData);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `طلب_${$('shopName').value || 'عميل'}_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showNotification('تم تصدير الطلب وحفظه بنجاح! يمكنك الآن إرساله عبر البريد الإلكتروني.');
-        
-        cart = [];
-        renderCart();
-        $('clientName').value = '';
-        $('clientPhone').value = '';
-        $('shopName').value = '';
-        $('address').value = '';
+        updateCartBadge();
+        closeCartModal();
     }
 
     function toggleAdminPanel(show = false) {
@@ -2234,59 +2332,8 @@ tr:hover {
             const { data: publicData } = supabase.storage.from('item-images').getPublicUrl(fileName);
             return publicData.publicUrl;
         } catch (error) {
-            console.error('Upload error:', error);
+            console.log('Upload error:', JSON.stringify(error));
             throw new Error('فشل رفع الصورة: ' + error.message);
-        }
-    }
-
-    async function createItem() {
-        const name = $('itemName').value.trim();
-        const description = $('itemDescription').value.trim();
-        const categoryId = parseInt($('itemCategory').value);
-        const stock = parseInt($('itemStock').value) || 0;
-        const imageFile = $('itemImage').files[0];
-        
-        if (!name) {
-            showNotification('يرجى إدخال اسم الصنف', 'error');
-            $('itemName').focus();
-            return;
-        }
-        
-        if (!categoryId) {
-            showNotification('يرجى اختيار التصنيف', 'error');
-            $('itemCategory').focus();
-            return;
-        }
-        
-        try {
-            let imageUrl = '';
-            if (imageFile) {
-                imageUrl = await uploadImage(imageFile);
-            }
-            
-            const newItem = {
-                name,
-                description,
-                img: imageUrl,
-                price: 0,
-                stock,
-                cat: categoryId
-            };
-            
-            const { error } = await supabase.from('items').insert([newItem]);
-            
-            if (error) {
-                showNotification('فشل إضافة الصنف: ' + error.message, 'error');
-            } else {
-                showNotification('تمت إضافة الصنف بنجاح!');
-                await loadCatalog();
-                renderCategories();
-                renderItems();
-                renderAdminTab('items');
-            }
-        } catch (err) {
-            console.error('Create item error:', err);
-            showNotification('خطأ غير متوقع أثناء إضافة الصنف', 'error');
         }
     }
 
@@ -2333,7 +2380,7 @@ tr:hover {
                 renderAdminTab('items');
             }
         } catch (err) {
-            console.error('Update item error:', err);
+            console.log('Update item error:', JSON.stringify(err));
             showNotification('خطأ غير متوقع أثناء تعديل الصنف', 'error');
         }
     }
@@ -2342,8 +2389,7 @@ tr:hover {
         if (!confirm('هل أنت متأكد من حذف هذا الصنف؟')) return;
         
         try {
-            const { error } = await supabase.from('items').delete().eq('id', itemId);
-            
+            const { error } = await supabase.from('items').delete().eq('id', itemId);            
             if (error) {
                 showNotification('فشل حذف الصنف: ' + error.message, 'error');
             } else {
@@ -2354,7 +2400,7 @@ tr:hover {
                 renderAdminTab('items');
             }
         } catch (err) {
-            console.error('Delete item error:', err);
+            console.log('Delete item error:', JSON.stringify(err));
             showNotification('خطأ غير متوقع أثناء حذف الصنف', 'error');
         }
     }
@@ -2391,8 +2437,7 @@ tr:hover {
         await renderCategoriesTable();
         $('btnNewCategory').onclick = () => renderCategoryForm();
     }
-
-    async function renderCategoriesTable() {
+ async function renderCategoriesTable() {
         const tbody = document.querySelector('#categoriesTable tbody');
         tbody.innerHTML = '';
         
@@ -3216,10 +3261,8 @@ tr:hover {
     });
 
     $('btnClearCart').onclick = clearCart;
-    $('btnSaveOrder').onclick = saveOrder;
     $('btnPrint').onclick = printOrder;
     $('btnWhatsApp').onclick = sendWhatsApp;
-    $('btnExportEmail').onclick = exportAndEmail;
 
     $('btnAdminOpen').onclick = () => toggleAdminPanel(true);
     $('btnAdminClose').onclick = () => toggleAdminPanel(false);
@@ -3260,6 +3303,10 @@ tr:hover {
     window.closeProductModal = closeProductModal;
     window.viewProductDetails = viewProductDetails;
     window.addToCart = addToCart;
+window.openCartModal = openCartModal;
+window.closeCartModal = closeCartModal;
+
+
 </script>
 <!-- أيقونة واتساب ثابتة أسفل يسار الشاشة -->
 <a id="whatsapp-button" class="whatsapp-fixed" target="_blank" title="تواصل معنا على واتساب">
@@ -3268,47 +3315,46 @@ tr:hover {
 <script>
 async function loadWhatsAppButton() {
     try {
-        // استيراد مكتبة Supabase
-        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-        
-        // تكوين Supabase
-        const SUPABASE_URL = 'https://muwylrqdcrzggqbxhmoq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im11d3lscnFkY3J6Z2dxYnhobW9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NjUzOTcsImV4cCI6MjA3MTI0MTM5N30.vO-mMw4TULYO62dNgw_lRe8NoMd9SW6SDOwjr5r83Zo';
-        
-        // إنشاء عميل Supabase
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // انتظر قليلاً إذا لم يكن عميل Supabase جاهزًا بعد
+        while (!window.supabase) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        // استخدم العميل الجاهز من النطاق العام (window)
+        const supabase = window.supabase;
 
         // جلب رقم واتساب من Supabase
         const { data, error } = await supabase
             .from('admins')
             .select('whatsapp')
-            .limit(1);
+            .limit(1)
+            .single(); // .single() أفضل لجلب سجل واحد
 
         if (error) throw error;
 
         let whatsappNumber = "967775961051"; // رقم بديل في حال فشل الجلب
-        if (data && data.length > 0 && data[0].whatsapp) {
-            whatsappNumber = data[0].whatsapp;
+        if (data && data.whatsapp) {
+            whatsappNumber = data.whatsapp;
         }
 
         const message = encodeURIComponent("السلام عليكم");
         const whatsappLink = `https://wa.me/${whatsappNumber}?text=${message}`;
 
-        const btn = document.getElementById('whatsapp-button');
+        const btn = document.getElementById('whatsapp-button' );
         btn.setAttribute('href', whatsappLink);
-
-        // فتح واتساب مباشر عند الضغط
-        btn.addEventListener('click', () => {
-            window.open(whatsappLink, "_blank");
-        });
 
     } catch (error) {
         console.error('Error loading WhatsApp number:', error);
+        // في حالة حدوث أي خطأ، استخدم الرقم البديل لضمان عمل الزر
+        const fallbackLink = `https://wa.me/967775961051?text=${encodeURIComponent("السلام عليكم" )}`;
+        document.getElementById('whatsapp-button').setAttribute('href', fallbackLink);
     }
 }
 
+// تأكد من تشغيل الدالة بعد تحميل الصفحة بالكامل
 document.addEventListener('DOMContentLoaded', loadWhatsAppButton);
 </script>
+
 <style>
 /* أيقونة واتساب أسفل يسار الشاشة */
 .whatsapp-fixed {
@@ -3346,9 +3392,7 @@ document.addEventListener('DOMContentLoaded', loadWhatsAppButton);
         left: 15px;
     }
 }
+</script>
 </style>
-
 </body>
 </html>
-
-
