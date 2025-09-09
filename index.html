@@ -3029,7 +3029,6 @@ async function createItem() {
             
             const { error } = await supabase.from('orders').update({
                 status: newStatus,
-                updated_at: new Date().toISOString()
             }).eq('id', orderId);
             
             if (error) {
@@ -3059,7 +3058,7 @@ async function createItem() {
             client_phone: $('editClientPhone').value.trim(),
             address: $('editAddress').value.trim(),
             status: $('editOrderStatus').value,
-            updated_at: new Date().toISOString()
+items: currentOrderBeingEdited.items
         };
         
         try {
@@ -3446,4 +3445,5 @@ document.addEventListener('DOMContentLoaded', loadWhatsAppButton);
 </style>
 </body>
 </html>
+
 
