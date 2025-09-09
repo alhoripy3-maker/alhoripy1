@@ -2336,6 +2336,56 @@ tr:hover {
             throw new Error('فشل رفع الصورة: ' + error.message);
         }
     }
+// ==========================================================
+// ✨  الحل: إضافة الدالة المفقودة لإنشاء صنف جديد  ✨
+// ==========================================================
+async function createItem() {
+    const name = $('itemName').value.trim();
+    const description = $('itemDescription').value.trim();
+    const categoryId = parseInt($('itemCategory').value);
+    const stock = parseInt($('itemStock').value) || 0;
+    const imageFile = $('itemImage').files[0];
+
+    if (!name) {
+        showNotification('يرجى إدخال اسم الصنف', 'error');
+        return;
+    }
+    if (!categoryId) {
+        showNotification('يرجى اختيار التصنيف', 'error');
+        return;
+    }
+
+    try {
+        showNotification('جاري إضافة الصنف...', 'info');
+        let imageUrl = null;
+        if (imageFile) {
+            imageUrl = await uploadImage(imageFile);
+        }
+
+        const newItem = {
+            name,
+            description,
+            img: imageUrl,
+            stock,
+            cat: categoryId
+        };
+
+        const { error } = await supabase.from('items').insert([newItem]);
+
+        if (error) {
+            showNotification('فشل إضافة الصنف: ' + error.message, 'error');
+        } else {
+            showNotification('تمت إضافة الصنف بنجاح!');
+            await loadCatalog(); // إعادة تحميل البيانات
+            renderCategories();
+            renderItems();
+            renderAdminTab('items'); // العودة إلى قائمة الأصناف
+        }
+    } catch (err) {
+        console.error('Create item error:', err);
+        showNotification('خطأ غير متوقع أثناء إضافة الصنف', 'error');
+    }
+}
 
     async function updateItem() {
         const name = $('itemName').value.trim();
@@ -3396,3 +3446,4 @@ document.addEventListener('DOMContentLoaded', loadWhatsAppButton);
 </style>
 </body>
 </html>
+
